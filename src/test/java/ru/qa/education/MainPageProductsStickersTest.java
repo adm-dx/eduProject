@@ -27,7 +27,7 @@ public class MainPageProductsStickersTest {
         driver.get("http://localhost/litecart/en/");
         productList = driver.findElements(By.xpath("//li[contains(@class, 'product')]"));
         for (WebElement product: productList) {
-            product.findElement(By.xpath("//*[contains(@class, 'sticker')]")).isDisplayed();
+            product.findElement(By.xpath(".//*[contains(@class, 'sticker')]")).isDisplayed();
         }
     }
 
