@@ -41,11 +41,13 @@ public class GeoZonesOrderCheckTest {
             for (WebElement zoneElement : zonesList) {
                 geoZonesList.add(zoneElement.getText());
             }
-            geoZonesListSorted = geoZonesList;
+            geoZonesListSorted = (ArrayList<String>) geoZonesList.clone();
             Collections.sort(geoZonesListSorted);
             assert geoZonesList.equals(geoZonesListSorted);
             driver.findElement(By.xpath("//button[@name = 'cancel']")).click();
             countriesList = driver.findElements(By.xpath("//tr[contains(@class, 'row')]//td[3]/a"));
+            geoZonesList.clear();
+            geoZonesListSorted.clear();
         }
     }
 
