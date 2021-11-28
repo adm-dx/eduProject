@@ -9,9 +9,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 public class RegisterNewUserTest {
@@ -19,6 +22,8 @@ public class RegisterNewUserTest {
     private WebDriverWait wait;
     private String email = getRandomPrefix() + "@testmail.ru";
     private String secret = "testPass";
+    private List<WebElement> zonesElementsList;
+    private ArrayList<String> zonesList;
 
     @Before
     public void start() {
@@ -40,6 +45,10 @@ public class RegisterNewUserTest {
         driver.findElement(By.xpath("//span[contains(@class, 'select2')]")).click();
         driver.findElement(By.xpath("//input[@type='search']")).sendKeys("United States");
         driver.findElement(By.xpath("//li[(text() ='United States')]")).click();
+        wait.until(elementToBeClickable(By.xpath("//select[@name='zone_code']")));
+        zonesElementsList = driver.findElements(By.xpath("//select[@name='zone_code']/option"));
+        Random rand = new Random();
+        zonesElementsList.get(rand.nextInt(zonesElementsList.size())).click();
         driver.findElement(By.name("email")).sendKeys(email);
         driver.findElement(By.name("phone")).sendKeys("+931231231");
         driver.findElement(By.name("password")).sendKeys(secret);
