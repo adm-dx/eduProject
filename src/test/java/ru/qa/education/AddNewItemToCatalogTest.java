@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
@@ -28,7 +29,8 @@ public class AddNewItemToCatalogTest {
 
     @Before
     public void start() {
-        driver = new ChromeDriver();
+//        driver = new ChromeDriver();
+        driver = new FirefoxDriver();
         wait = new WebDriverWait(driver, 10);
     }
 
@@ -50,8 +52,9 @@ public class AddNewItemToCatalogTest {
         genderInputsList.get(rand.nextInt(genderInputsList.size())).click();
         driver.findElement(By.name("quantity")).sendKeys(String.valueOf(rand.nextInt(100)));
         driver.findElement(By.name("new_images[]")).sendKeys(filePath);
-        driver.findElement(By.name("date_valid_from")).sendKeys("01012020");
-        driver.findElement(By.name("date_valid_to")).sendKeys("01012022");
+        driver.findElement(By.name("date_valid_from")).sendKeys("2020-01-01");
+        Thread.sleep(5000);
+        driver.findElement(By.name("date_valid_to")).sendKeys("2022-01-01");
         driver.findElement(By.xpath("//a[contains(text(), 'Information')]")).click();
         wait.until(elementToBeClickable(By.name("manufacturer_id"))).click();
         driver.findElement(By.xpath("//option[contains(text(), 'ACME')]")).click();
