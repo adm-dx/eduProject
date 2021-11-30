@@ -28,7 +28,7 @@ public class AddNewItemToCatalogTest {
 
     @Before
     public void start() {
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
         driver = new FirefoxDriver();
         wait = new WebDriverWait(driver, 10);
     }
@@ -58,6 +58,7 @@ public class AddNewItemToCatalogTest {
         else {
             driver.findElement(By.name("date_valid_from")).sendKeys("01012020");
             driver.findElement(By.name("date_valid_to")).sendKeys("01012022");
+        }
         driver.findElement(By.xpath("//a[contains(text(), 'Information')]")).click();
         wait.until(elementToBeClickable(By.name("manufacturer_id"))).click();
         driver.findElement(By.xpath("//option[contains(text(), 'ACME')]")).click();
