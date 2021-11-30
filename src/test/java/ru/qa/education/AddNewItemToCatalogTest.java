@@ -17,8 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class AddNewItemToCatalogTest {
     private WebDriver driver;
@@ -29,7 +28,7 @@ public class AddNewItemToCatalogTest {
 
     @Before
     public void start() {
-//        driver = new ChromeDriver();
+        driver = new ChromeDriver();
         driver = new FirefoxDriver();
         wait = new WebDriverWait(driver, 10);
     }
@@ -52,9 +51,13 @@ public class AddNewItemToCatalogTest {
         genderInputsList.get(rand.nextInt(genderInputsList.size())).click();
         driver.findElement(By.name("quantity")).sendKeys(String.valueOf(rand.nextInt(100)));
         driver.findElement(By.name("new_images[]")).sendKeys(filePath);
-        driver.findElement(By.name("date_valid_from")).sendKeys("2020-01-01");
-        Thread.sleep(5000);
-        driver.findElement(By.name("date_valid_to")).sendKeys("2022-01-01");
+        if(driver instanceof FirefoxDriver) {
+            driver.findElement(By.name("date_valid_from")).sendKeys("2020-01-01");
+            driver.findElement(By.name("date_valid_to")).sendKeys("2022-01-01");
+        }
+        else {
+            driver.findElement(By.name("date_valid_from")).sendKeys("01012020");
+            driver.findElement(By.name("date_valid_to")).sendKeys("01012022");
         driver.findElement(By.xpath("//a[contains(text(), 'Information')]")).click();
         wait.until(elementToBeClickable(By.name("manufacturer_id"))).click();
         driver.findElement(By.xpath("//option[contains(text(), 'ACME')]")).click();
@@ -64,7 +67,7 @@ public class AddNewItemToCatalogTest {
         driver.findElement(By.name("head_title[en]")).sendKeys("testItem_HeadTitle");
         driver.findElement(By.name("meta_description[en]")).sendKeys("testItem_MetaDescription");
         driver.findElement(By.xpath("//a[contains(text(), 'Prices')]")).click();
-        wait.until(presenceOfElementLocated(By.name("purchase_price"))).sendKeys(String.valueOf(rand.nextInt(10)));
+        wait.until(visibilityOfElementLocated(By.name("purchase_price"))).sendKeys(String.valueOf(rand.nextInt(10)));
         driver.findElement(By.name("purchase_price_currency_code")).click();
         wait.until(elementToBeClickable(By.xpath("//option[@data-prefix='$']"))).click();
         driver.findElement(By.name("gross_prices[USD]")).sendKeys("50");
