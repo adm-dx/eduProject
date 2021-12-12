@@ -1,44 +1,38 @@
-package ru.qa.education;
+package ru.qa.education.pages;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
-public class AddNewItemToCatalogTest {
+public class AdminPage {
+
     private WebDriver driver;
-    private WebDriverWait wait;
-    private List<WebElement> genderInputsList;
     private String itemName = generateItemName();
     private String filePath = generateFilePath();
 
-    @Before
-    public void start() {
-        //driver = new ChromeDriver();
-        driver = new FirefoxDriver();
-        wait = new WebDriverWait(driver, 10);
+    public AdminPage(WebDriver driver) {
+        this.driver = driver;
     }
 
-    @Test
-    public void addNewItemToCatalogTest() throws InterruptedException {
+    public void loginToApp(String username, String password) {
         driver.get("http://localhost/litecart/admin/");
-        driver.findElement(By.name("username")).sendKeys("admin");
-        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.name("username")).sendKeys(username);
+        driver.findElement(By.name("password")).sendKeys(password);
         driver.findElement(By.name("login")).click();
+    }
+
+    public void addNewProductToCatalog() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         driver.findElement(By.xpath("//span[text()='Catalog']")).click();
         wait.until(elementToBeClickable(By.xpath("//a[contains(text(), ' Add New Product')]"))).click();
         wait.until(elementToBeClickable(By.xpath("//label[contains(text(), 'Enabled')]/input"))).click();
@@ -46,16 +40,15 @@ public class AddNewItemToCatalogTest {
         driver.findElement(By.name("code")).sendKeys("testItemCode");
         driver.findElement(By.xpath("//input[@data-name='Rubber Ducks']")).click();
         driver.findElement(By.xpath("//input[@data-name='Subcategory']")).click();
-        genderInputsList = driver.findElements(By.name("product_groups[]"));
+        List<WebElement> genderInputsList = driver.findElements(By.name("product_groups[]"));
         Random rand = new Random();
         genderInputsList.get(rand.nextInt(genderInputsList.size())).click();
         driver.findElement(By.name("quantity")).sendKeys(String.valueOf(rand.nextInt(100)));
         driver.findElement(By.name("new_images[]")).sendKeys(filePath);
-        if(driver instanceof FirefoxDriver) {
+        if (driver instanceof FirefoxDriver) {
             driver.findElement(By.name("date_valid_from")).sendKeys("2020-01-01");
             driver.findElement(By.name("date_valid_to")).sendKeys("2022-01-01");
-        }
-        else {
+        } else {
             driver.findElement(By.name("date_valid_from")).sendKeys("01012020");
             driver.findElement(By.name("date_valid_to")).sendKeys("01012022");
         }
@@ -77,12 +70,6 @@ public class AddNewItemToCatalogTest {
         wait.until(presenceOfElementLocated(By.xpath("//table[@class='dataTable']//a[contains(text(), '" + itemName + "')]")));
     }
 
-    @After
-    public void stop() {
-        driver.quit();
-        driver = null;
-    }
-
     private String generateItemName() {
         Date date = new Date();
         Random rand = new Random();
@@ -90,9 +77,31 @@ public class AddNewItemToCatalogTest {
         return "testItem" + (date.getTime() / 100000 + rand.nextInt(2000));
     }
 
-    private String generateFilePath(){
+    private String generateFilePath() {
         File img = new File("src/test/pictures/d5cf98eedcc655db4d344c5d2b2dc9f3.jpg");
         String s = img.getAbsolutePath();
         return s;
+    }
+
+    public void goToCountries() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(presenceOfElementLocated(By.xpath("//span[text()='Countries']"))).click();
+        wait.until(elementToBeClickable(By.xpath("//a[contains(text(), ' Add New Country')]"))).click();
+    }
+
+    public void clickExternalLinks() {
+        List<WebElement> externalLinksList;
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        externalLinksList = driver.findElements(By.xpath("//td[@id='content']//table//a[@target='_blank']"));
+        for (WebElement linkElement: externalLinksList) {
+            String mainWindowID = driver.getWindowHandle();
+            linkElement.click();
+            ArrayList<String> newWindowID = new ArrayList<>(driver.getWindowHandles());
+            newWindowID.remove(mainWindowID);
+            driver.switchTo().window(newWindowID.get(0));
+            wait.until(presenceOfElementLocated(By.tagName("h1")));
+            driver.close();
+            driver.switchTo().window(mainWindowID);
+        }
     }
 }

@@ -1,19 +1,15 @@
-package ru.qa.education;
+package ru.qa.education.tests;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.qa.education.pages.AdminPage;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-
-public class MyFirstTest {
+public class AdminLoginTest {
 
     private WebDriver driver;
-    private WebDriverWait wait;
 
     @Before
     public void start() {
@@ -21,8 +17,9 @@ public class MyFirstTest {
     }
 
     @Test
-    public void myFirstTest() {
-        driver.get("https://www.google.com");
+    public void adminLoginTest(){
+        AdminPage adminPage = new AdminPage(driver);
+        adminPage.loginToApp("admin", "admin");
     }
 
     @After
